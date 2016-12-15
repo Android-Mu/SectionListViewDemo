@@ -15,6 +15,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Description：分级列表,也可适用于普通列表数据显示
+ * <p>
+ * Created by Mjj on 2016/12/15.
+ */
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     public static List<String> sectionList = new ArrayList<>();
@@ -53,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     static class SimpleAdapter extends ArrayAdapter<Item> implements PinnedSectionListView.PinnedSectionListAdapter {
 
-        private static final int[] COLORS = new int[]{R.color.colorA, R.color.colorAccent, R.color.colorB, R.color.colorPrimary};
-
         public SimpleAdapter(Context context, int resource, int textViewResourceId) {
             super(context, resource, textViewResourceId);
             generateDataset();
@@ -82,11 +86,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             TextView view = (TextView) super.getView(position, convertView, parent);
-            view.setTextColor(Color.DKGRAY);
             view.setTag("" + position); // 并没有使用到
             Item item = getItem(position);
             if (item.type == Item.SECTION) {
-                view.setBackgroundColor(parent.getResources().getColor(COLORS[item.sectionPosition % COLORS.length]));
+                view.setBackgroundColor(Color.GRAY);
             }
             return view;
         }
@@ -107,28 +110,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    // 实体类
-    static class Item {
-
-        // 区分项
-        public static final int ITEM = 0;
-        public static final int SECTION = 1;
-
-        public final int type;
-        public final String text;
-
-        public int sectionPosition;
-        public int listPosition;
-
-        public Item(int type, String text) {
-            this.type = type;
-            this.text = text;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
-    }
 
 }
