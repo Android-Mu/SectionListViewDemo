@@ -1,15 +1,10 @@
 package com.example.mjj.sectionlistviewdemo;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,8 +18,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    public static List<String> sectionList = new ArrayList<>();
-    public static List<String> positionList = new ArrayList<>();
+    private List<String> sectionList = new ArrayList<>();
+    private List<String> positionList = new ArrayList<>();
 
     private ListView listView;
     private SimpleAdapter simpleAdapter;
@@ -41,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         listView = (ListView) findViewById(R.id.lv_main);
         listView.setOnItemClickListener(this);
-        simpleAdapter = new SimpleAdapter(MainActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1);
+        simpleAdapter = new SimpleAdapter(MainActivity.this, android.R.layout.simple_list_item_1,
+                android.R.id.text1, sectionList, positionList);
         listView.setAdapter(simpleAdapter);
     }
 
@@ -56,59 +52,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Toast.makeText(this, "Item " + i, Toast.LENGTH_SHORT).show();
         }
     }
-
-    static class SimpleAdapter extends ArrayAdapter<Item> implements PinnedSectionListView.PinnedSectionListAdapter {
-
-        public SimpleAdapter(Context context, int resource, int textViewResourceId) {
-            super(context, resource, textViewResourceId);
-            generateDataset();
-        }
-
-        public void generateDataset() {
-            int sectionPosition = 0, listPosition = 0;
-            // 初始化数据源
-            for (char i = 0; i < sectionList.size(); i++) {
-                Item section = new Item(Item.SECTION, sectionList.get(i));
-                section.sectionPosition = sectionPosition;
-                section.listPosition = listPosition++;
-                add(section);
-
-                for (int j = 0; j < positionList.size(); j++) {
-                    Item item = new Item(Item.ITEM, positionList.get(j));
-                    item.sectionPosition = sectionPosition;
-                    item.listPosition = listPosition++;
-                    add(item);
-                }
-                sectionPosition++;
-            }
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView view = (TextView) super.getView(position, convertView, parent);
-            view.setTag("" + position); // 并没有使用到
-            Item item = getItem(position);
-            if (item.type == Item.SECTION) {
-                view.setBackgroundColor(Color.GRAY);
-            }
-            return view;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return getItem(position).type;
-        }
-
-        @Override
-        public boolean isItemViewTypePinned(int viewType) {
-            return viewType == Item.SECTION;
-        }
-    }
-
 
 }
